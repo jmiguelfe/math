@@ -1,99 +1,90 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 )
 
+func calculateMedian(data []int) int {
+	// Sort the data in ascending order
+	sort.Ints(data)
+
+	length := len(data)
+	if length%2 == 0 {
+		// If the length is even, average the middle two elements
+		middle1 := data[length/2-1]
+		middle2 := data[length/2]
+		return (middle1 + middle2) / 2
+	} else {
+		// If the length is odd, return the middle element
+		middle := data[length/2]
+		return middle
+	}
+}
+// The function calculates the average of a given slice of integers.
+func calculateAverage(data []int) int {
+	sum := 0
+	for _, value := range data {
+		sum += value
+	}
+	return sum / len(data)
+}
+// The function calculates the variance of a given set of integers.
+func calculateVariance(data []int) int {
+	average := calculateAverage(data)
+	sumOfSquares := 0
+	for _, value := range data {
+		deviation := value - average
+		sumOfSquares += deviation * deviation
+	}
+	return sumOfSquares / len(data)
+}
+// The function calculates the standard deviation of a given set of integer data.
+func calculateStandardDeviation(data []int) int {
+	variance := calculateVariance(data)
+	return int(math.Round(math.Sqrt(float64(variance))))
+}
+// The function reads data from a file, calculates the median, average, variance, and standard
+// deviation of the data, and prints the results.
 func main() {
-	number, err := ReadFile("data.txt")
+	if len(os.Args) < 2 {
+		log.Fatal("Please provide a file path as an argument.")
+	}
+
+	filePath := os.Args[1]
+
+	content, err := os.ReadFile("data.txt")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to read file: %s", err)
 	}
 
-	Average := CalculateAverage(number)
-	Median := CalculateMedian(number)
-	Variance := CalculateVariance(number)
-	StandardDeviation := CalculateStandardDeviation(number)
+	lines := strings.Split(string(content), "\n")
+	data := make([]int, 0, len(lines))
 
-	fmt.Printf("Average: %d\n", Average)
-	fmt.Printf("Median: %d\n", Median)
-	fmt.Printf("Variance: %d\n", Variance)
-	fmt.Printf("StandardDeviation: %d\n", StandardDeviation)
-}
-
-func CalculateAverage(numbers []int) int {
-	sumatoria := 0
-	for _, valor := range numbers {
-		sumatoria += valor
-	}
-	avarage := sumatoria / len(numbers)
-	return avarage
-}
-
-func CalculateMedian(numbers []int) int {
-	sort.Ints(numbers)   // Sorte the number in ascending order
-	leng := len(numbers) // Get the length of the slice
-
-	if leng%2 == 0 {
-		// check if the lenght is even Or par
-		return (numbers[leng/2-1] + numbers[leng/2]) / 2
-	}
-	// se deveria de aver puesto +1 pero como en array se empieza por zero nose pone
-	return numbers[leng/2]
-}
-
-func CalculateStandardDeviation(numbers []int) int {
-	//  la desviación estándar de la población es igual a la raíz cuadrada de la varianza:
-	Variance := CalculateVariance(numbers)
-
-	stanndarD := math.Sqrt(float64(Variance))
-	return int(stanndarD)
-}
-
-func CalculateVariance(numbers []int) int {
-	// Get the avarage
-	average := CalculateAverage(numbers)
-	sum := 0.0
-	for _, numb := range numbers {
-		sum += math.Pow(float64(numb)-float64(average), 2)
-	}
-	result := sum / float64(len(numbers))
-
-	return int(result)
-}
-
-func ReadFile(fileName string) ([]int, error) {
-	// Open the file
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var numbers []int
-	scanner := bufio.NewScanner(file)
-
-	// Read each line of the file
-	for scanner.Scan() {
-		line := scanner.Text()
-		// Convert the text from each line to a float64
-		number, err := strconv.Atoi(line)
-		if err != nil {
-			return nil, err
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
 		}
-		// Append the converted number to the slice
-		numbers = append(numbers, number)
-	}
 
-	// Check for any scanning errors
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
+		value, err := strconv.Atoi(line)
+		if err != nil {
+			log.Fatalf("Invalid data format in file: %s", filePath)
+		}
 
-	return numbers, nil
+		data = append(data, value)
+	}
+	median := calculateMedian(data)
+	average := calculateAverage(data)
+	variance := calculateVariance(data)
+	standardDeviation := calculateStandardDeviation(data)
+	fmt.Println("Median:", median)
+	fmt.Println("Average:", average)
+	fmt.Println("Variance:", variance)
+	fmt.Println("Standard Deviation:", standardDeviation)
 }
