@@ -27,11 +27,13 @@ func main() {
 }
 
 func CalculateAverage(numbers []float64) float64 {
-	sumatoria := 0.0
+	count := 0.0
 	for _, valor := range numbers {
-		sumatoria += valor
+		count += valor
 	}
-	avarage := sumatoria / float64(len(numbers))
+	// valor de la slice dividido por la longitud de slide
+
+	avarage := count / float64(len(numbers))
 	return avarage
 }
 
@@ -41,10 +43,12 @@ func CalculateMedian(numbers []float64) float64 {
 
 	if leng%2 == 0 {
 		// check if the lenght is even Or par
-		return (numbers[leng/2-1] + numbers[leng/2]) / 2
+		return float64(numbers[leng/2-1]+numbers[leng/2+1]) / 2
 	}
-	// se deveria de aver puesto +1 pero como en array se empieza por zero nose pone
-	return numbers[leng/2]
+	/* se deveria de aver puesto +1 pero como en array se empieza por zero nose pone
+	 check if the lenght is impar or over return
+	longitudd del numero dividido ente 2 mas 1 esta es la formula para encontar la media de impar*/
+	return numbers[leng/2+1]
 }
 
 func CalculateStandardDeviation(numbers []float64) float64 {
