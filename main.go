@@ -19,9 +19,9 @@ func main() {
 	Median := CalculateMedian(number)
 	Variance := CalculateVariance(number)
 	StandardDeviation := CalculateStandardDeviation(number)
-
+	// The .0f specifier indicates that decimals will not be displayed, that is, the number will be rounded to the nearest integer.
 	fmt.Printf("Average: %.0f\n", Average)
-	fmt.Printf("Median: %0.f\n", Median)
+	fmt.Printf("Median: %d\n", int(math.Round(Median)))
 	fmt.Printf("Variance: %0.f\n", Variance)
 	fmt.Printf("StandardDeviation: %0.f\n", StandardDeviation)
 }
@@ -43,12 +43,12 @@ func CalculateMedian(numbers []float64) float64 {
 
 	if leng%2 == 0 {
 		// check if the lenght is even Or par
-		return float64(numbers[leng/2-1]+numbers[leng/2+1]) / 2
+		return float64(numbers[leng/2-1]+numbers[leng/2]) / 2
 	}
 	/* se deveria de aver puesto +1 pero como en array se empieza por zero nose pone
 	 check if the lenght is impar or over return
 	longitudd del numero dividido ente 2 mas 1 esta es la formula para encontar la media de impar*/
-	return numbers[leng/2+1]
+	return numbers[leng/2]
 }
 
 func CalculateStandardDeviation(numbers []float64) float64 {
